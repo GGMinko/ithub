@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mouse Event Slider</title>
+<style>
+  #slider {
+    width: 300px;
+    height: 10px;
+    background-color: lightgray;
+    position: relative;
+    cursor: pointer;
+  }
+
+  #slider .handle {
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    top: -5px;
+    cursor: grab;
+  }
+
+  #slider .value {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+</style>
+</head>
+<body>
+<div id="slider">
+  <div class="handle"></div>
+  <div class="value">50</div>
+</div>
+
+<script>
+  const slider = document.getElementById('slider');
+  const handle = slider.querySelector('.handle');
+  const valueDisplay = slider.querySelector('.value');
+  
+  const minValue = 0;
+  const maxValue = 100;
+
+  let isDragging = false;
+
+  function updateHandlePosition(clientX) {
+    const sliderRect = slider.getBoundingClientRect();
+    const offsetX = clientX - sliderRect.left;
+    const position = Math.max(0, Math.min(1, offsetX / sliderRect.width));
+    const value = Math.round(minValue + position * (maxValue - minValue));
+    
+    handle.style.left = `${position * 100}%`;
+    valueDisplay.textContent = value;
+  }
+
+  handle.addEventListener('mousedown', (event) => {
+    isDragging = true;
+    handle.style.cursor = 'grabbing';
+    updateHandlePosition(event.clientX);
+  });
+
+  document.addEventListener('mousemove', (event) => {
+    if (isDragging) {
+      updateHandlePosition(event.clientX);
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      handle.style.cursor = 'grab';
+    }
+  });
+</script>
+</body>
+</html>
